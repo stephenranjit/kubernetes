@@ -1,0 +1,82 @@
+{
+"apiVersion": "v1beta3",
+"kind": "Pod",
+"metadata": {"name":"centos7-nfs-hostfs"},
+"spec":{
+"containers":[
+    {
+    "name": "c1",
+    "image": "mysql",
+    "env": [
+            {
+              "name": "ROOT_PASS",
+              "value": "netapp"
+            },
+	    {
+	      "name": "MYSQL_ROOT_PASSWORD",
+	      "value": "netapp"
+	    }
+       ],
+    "ports":[
+      {
+	"name": "mysql",
+	"containerPort": 3306,
+	"hostPort": 3306
+      }
+        ],
+    "resources": {
+          "limits": {
+            "cpu": "2"
+          }
+        },
+    "volumeMounts": [
+      { "name": "podshare",
+        "mountPath": "/x/eng/rlse/jenkins_scratch/podshare",
+        "readOnly": false},
+
+      { "name": "usrsoftware",
+        "mountPath": "/usr/software",
+        "readOnly": true},
+
+      { "name": "rats-noarch",
+        "mountPath": "/x/eng/rats",
+        "readOnly": true},
+      
+      { "name": "x-eng-site",
+        "mountPath": "/x/eng/site",
+        "readOnly": true},
+
+      { "name": "bbnb",
+        "mountPath": "/x/eng/bbnb",
+        "readOnly": false}
+        ]
+    }
+],
+"volumes":[
+  { "name": "podshare",
+    "hostPath": {
+        "path": "/x/eng/rlse/jenkins_scratch/podshare"}
+  },
+  { "name": "usrsoftware",
+    "nfs": {
+        "server": "btcinf01.eng.btc.netapp.in",
+        "path": "/vol/software/arch/x86_64-redhat-rhel6"}
+  },
+  { "name": "rats-noarch",
+    "nfs": {
+        "server": "btcinf02.eng.btc.netapp.in",
+        "path": "/vol/rats"}
+  },
+  { "name": "x-eng-site",
+    "nfs": {
+        "server": "10.72.10.243",
+        "path": "/share/site"}
+  },
+  { "name": "bbnb",
+    "nfs": {
+        "server": "10.72.10.206",
+        "path": "/share/bammbamm/nb"}
+  }
+]
+}
+}

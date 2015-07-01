@@ -1,0 +1,68 @@
+{
+"apiVersion": "v1beta3",
+"kind": "Pod",
+"metadata": {"name":"centos7-nfs-hostfs"},
+"spec":{
+"containers":[
+    {
+    "name": "c1",
+    "image": "centos",
+    "args": [
+          "dns:110.111.121.113"
+        ],
+    "command": [
+	              	"/bin/sh",
+	              	"-c",
+	              	"/x/podshare/scripts/install-ssh.sh"
+	        ],
+    "env": [
+            {
+              "name": "ROOT_PASS",
+              "value": "vagrant"
+            }
+       ],
+    "ports":[
+      { "name": "ssh",
+        "containerPort": 22,
+        "hostPort": 442}
+        ],
+    "resources": {
+          "limits": {
+            "cpu": "2"
+          }
+        },
+    "privileged": true,
+    "hostNetwork": true,
+    "volumeMounts": [
+      { "name": "podshare",
+        "mountPath": "/x/podshare",
+        "readOnly": false},
+
+      { "name": "usrsoftware",
+        "mountPath": "/usr/software",
+        "readOnly": true},
+
+      { "name": "rats-noarch",
+        "mountPath": "/x/eng/rats",
+        "readOnly": true}
+        ]
+    }
+],
+"volumes":[
+  { "name": "podshare",
+    "hostPath": {
+        "path": "."}
+  },
+  { "name": "usrsoftware",
+    "nfs": {
+        "server": "10.11.12.13",
+        "path": "/vol/software/arch/x86_64-redhat-rhel6"}
+  },
+  { "name": "rats-noarch",
+    "nfs": {
+        "server": "14.15.16.17",
+        "path": "/vol/rats"}
+  }
+]
+}
+}
